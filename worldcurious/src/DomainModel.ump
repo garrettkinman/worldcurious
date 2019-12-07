@@ -1,0 +1,124 @@
+class Location
+{
+  unique String name;
+  lazy Integer population;
+  // TODO: maybe handle population as a collection of Persons?
+  
+  1 location -- 1 Economy economy;
+}
+
+class Faction
+{
+  isA Location;
+  // TODO: more attributes, maybe connect to economy?
+  
+  1 faction -- * Region regions;
+  1 -> 1 City capital;
+  1 faction -- * City cities;
+}
+
+class Region
+{
+  isA Location;
+  // TODO: more attributes, maybe connect to economy?
+  
+  1 -> 1 City capital;
+  1 region -- * City cities;
+}
+
+class City
+{
+  isA Location;
+  // TODO: more attributes, maybe connect to economy?
+  
+}
+
+class Person
+{
+  autounique id;
+  
+  * members -- 1 Labor job;
+}
+
+// in this model, a character is a named Person; they could be important to the story or not, but they are named
+class Character
+{
+  isA Person;
+  String name;
+  Boolean isAlive;
+  enum Gender { Male, Female, Other };
+  lazy Date birthdate;
+
+  // TODO: more attributes, something with personality, something with relationships and family
+}
+
+// in this model, an economy is the sum of all the industries within it, and its output is the sum of all their outputs
+class Economy
+{
+  
+  * economies -- * Industry industries;
+}
+
+// in this model, an industry is something that converts one set of inputs into another set of outputs
+class Industry
+{
+ String name;
+  
+ * consumers -- * Resource complementaryInputs;
+ * producers -- * Resource outputs;
+ * industries -- * SubstituteResourceSet substituteInputSet;
+  // TODO: handle complementary inputs (you need all of them) vs substitute inputs (you only need at least one of them)
+}
+
+class SubstituteResourceSet
+{
+  autounique id;
+  
+  * -- * Resource substituteInputs;
+}
+
+class Resource
+{
+  String name;
+  // TODO: more attributes
+}
+
+class Crop
+{
+  enum CropType { FoodCrop, CashCrop };
+  Integer kcalPerAcre;
+  isA Resource;
+  // TODO: attributes
+}
+
+class Labor
+{
+  isA Resource;
+  
+  // TODO: more attributes, somehow relate to resources?
+}
+
+class Livestock
+{
+  isA Resource;
+  // TODO: more attributes
+}
+
+class Material
+{
+  isA Resource;
+}
+
+class TradeRoute
+{
+  autounique id;
+  
+  * tradeRoutes -- 2..* City destinations;
+}
+
+// TODO: imports and exports of resources
+// TODO: types of resources
+// TODO: governments
+// TODO: military? it could be a subclass of Industry, but have no outputs? would represent the cost of resources but no output. could have extra associations that a regular industry does not have.
+// TODO: professions (some way in which labor is a type of resource?)
+// TODO: non-character people? i.e., they make up society and the economy, but aren't relevant to the plot

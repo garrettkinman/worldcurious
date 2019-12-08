@@ -112,7 +112,8 @@ class Resource
 
 class Crop
 {
-  enum CropType { FoodCrop, CashCrop };
+  enum CropType { FoodCrop, CashCrop }
+  CropType cropType;
   Integer kcalPerAcre;
   isA Resource;
   // TODO: attributes

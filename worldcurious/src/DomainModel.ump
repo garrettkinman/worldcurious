@@ -13,7 +13,7 @@ class Faction
   // TODO: more attributes, maybe connect to economy?
   
   1 faction -- * Region regions;
-  1 -> 1 City capital;
+  0..1 -> 1 City capital;
   1 faction -- * City cities;
 }
 
@@ -22,7 +22,7 @@ class Region
   isA Location;
   // TODO: more attributes, maybe connect to economy?
   
-  1 -> 1 City capital;
+  0..1 -> 1 City capital;
   1 region -- * City cities;
 }
 
@@ -33,9 +33,23 @@ class City
   
 }
 
+class Government
+{
+  autounique id;
+  enum PowerStructure { Anarchy, Confederation, Federation, UnitaryState }
+  lazy PowerStructure powerStructure;
+  enum PowerSource { Autocracy, Democracy, Oligarchy }
+  lazy PowerSource powerSource;
+  enum PowerIdeology { Constitutional, Monarchy, Republic }
+  lazy PowerIdeology[] powerIdeologies;
+  1 government -- 1 Faction faction;
+}
+
+// TODO: replace Person with Population, and create an association class with labor to represent the proportion in each profession
 class Person
 {
   autounique id;
+  const Integer CALORIES_PER_YEAR = 1000000;
   
   * members -- 1 Labor job;
 }
@@ -46,9 +60,17 @@ class Character
   isA Person;
   String name;
   Boolean isAlive;
-  enum Gender { Male, Female, Other };
-  lazy Date birthdate;
-
+  enum Gender { Male, Female, Other }
+  Gender gender;
+  lazy Date birthdate;  
+  
+  // physicality
+  enum Build { Light, Average, Strong }
+  lazy Build build;
+  enum Weight { Slim, Average, Heavy }
+  lazy Weight weight;
+  enum Height { Short, Average, Tall }
+  lazy Height height;
   // TODO: more attributes, something with personality, something with relationships and family
 }
 
@@ -70,6 +92,11 @@ class Industry
   // TODO: handle complementary inputs (you need all of them) vs substitute inputs (you only need at least one of them)
 }
 
+class Military
+{
+  isA Industry;
+}
+
 class SubstituteResourceSet
 {
   autounique id;
@@ -79,7 +106,7 @@ class SubstituteResourceSet
 
 class Resource
 {
-  String name;
+  unique String name;
   // TODO: more attributes
 }
 
@@ -113,7 +140,19 @@ class TradeRoute
 {
   autounique id;
   
-  * tradeRoutes -- 2..* City destinations;
+  // TODO: connect TradeRoute with economy somehow; need to model imports and exports with regard to a certain economy?
+  // TODO: need to associate each city on a trade route with the resources that city imports and exports; maybe a TradeExchange class?
+  * tradeRoutes -- 1..* Economy economies;
+}
+
+class TradeExchange
+{
+  autounique id;
+  
+  * destinations -- 1 TradeRoute tradeRoute;
+  * markets -- 1 City city;
+  * importMarkets -- * Resource imports;
+  * exportMarkets -- * Resource exports;
 }
 
 // TODO: imports and exports of resources

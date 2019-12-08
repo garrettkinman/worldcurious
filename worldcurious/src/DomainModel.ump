@@ -1,40 +1,60 @@
 namespace model;
 
+// Location represents a location, just in terms of political distinctions
+// treat like an abstract class
+// all locations will have an economy
+// TODO: all locations will have a population; treat as aggregate since a billion individuals would be pointless and expensive to simulate
 class Location
 {
   unique String name;
   lazy Integer population;
-  // TODO: maybe handle population as a collection of Persons?
   
   1 location -- 1 Economy economy;
 }
 
+// Faction represents a nation, state, or any geopolitical entity that geopolitically acts as a unit
+// it will have at least one region
+// it will have at least one city, one of which will be its capital
+// it will have a government
+// TODO: it will have a military
+// it will have trade partners, allies, and rivals
+// TODO: it will have characters
 class Faction
 {
   isA Location;
-  // TODO: more attributes, maybe connect to economy?
   
   1 faction -- * Region regions;
   0..1 -> 1 City capital;
   1 faction -- * City cities;
+  * tradePartners -- * Faction tradePartners;
+  * allies -- * Faction allies;
+  * rivals -- * Faction rivals;
 }
 
+// Region represents a geographical region
+// it will be part of a faction
+// it will have at least one city, one of which will be its capital
+// it will have a certain climate
 class Region
 {
   isA Location;
-  // TODO: more attributes, maybe connect to economy?
   
   0..1 -> 1 City capital;
   1 region -- * City cities;
 }
 
+// City represents, well, a city
+// it will be part of a region part of a faction
+// it can have trade routes that connect it to other cities
 class City
 {
   isA Location;
-  // TODO: more attributes, maybe connect to economy?
   
 }
 
+// Government represents the national government
+// TODO: it can have a leader, who is a character?
+// TODO: it can have several other characters in government positions?
 class Government
 {
   autounique id;
@@ -56,7 +76,8 @@ class Person
   * members -- 1 Labor job;
 }
 
-// in this model, a character is a named Person; they could be important to the story or not, but they are named
+// Character represents a named person; they could be important to the story or not, but they are named
+// TODO: they can have a profession
 class Character
 {
   isA Person;
@@ -76,14 +97,19 @@ class Character
   // TODO: more attributes, something with personality, something with relationships and family
 }
 
-// in this model, an economy is the sum of all the industries within it, and its output is the sum of all their outputs
+// Economy represents the sum of all the industries within it, and its output is the sum of all their outputs
+// it has a number of industries
+// it can have a number of trade routes
 class Economy
 {
   
   * economies -- * Industry industries;
 }
 
-// in this model, an industry is something that converts one set of inputs into another set of outputs
+// Industry represents an entity that converts one set of inputs into another set of outputs
+// it has a number of complementary resource inputs (all of them are needed)
+// it has a number of substitute resource input sets (just need one of them)
+// it has a number of resource outputs
 class Industry
 {
  String name;
@@ -94,9 +120,13 @@ class Industry
   // TODO: handle complementary inputs (you need all of them) vs substitute inputs (you only need at least one of them)
 }
 
+// Military is a subclass of Industry that has no outputs
+// TODO: has an associated faction
 class Military
 {
   isA Industry;
+  
+  // TODO: attributes
 }
 
 class SubstituteResourceSet
@@ -106,6 +136,8 @@ class SubstituteResourceSet
   * -- * Resource substituteInputs;
 }
 
+// TODO: more subclasses of Resource, to represent important categories of resources that would have distinct attributes
+// a Resource is anything — land, labor, capital, or something else — that is used to create more goods or is a final good
 class Resource
 {
   unique String name;
@@ -158,9 +190,8 @@ class TradeExchange
   * exportMarkets -- * Resource exports;
 }
 
-// TODO: imports and exports of resources
 // TODO: types of resources
-// TODO: governments
 // TODO: military? it could be a subclass of Industry, but have no outputs? would represent the cost of resources but no output. could have extra associations that a regular industry does not have.
 // TODO: professions (some way in which labor is a type of resource?)
 // TODO: non-character people? i.e., they make up society and the economy, but aren't relevant to the plot
+// TODO: enums for climate that can be used by a region and for crops

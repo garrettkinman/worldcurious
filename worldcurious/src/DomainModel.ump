@@ -53,6 +53,9 @@ class City
 }
 
 // Government represents the national government
+// it has a power structure, which describes how centralized government authority is
+// it has a power source, which describes who/what is the source of the power, i.e., one, a few, or the people
+// it has one or more power ideologies, which describes what limits are placed on power
 // TODO: it can have a leader, who is a character?
 // TODO: it can have several other characters in government positions?
 class Government
@@ -129,6 +132,8 @@ class Military
   // TODO: attributes
 }
 
+// SubstituteResourceSet is used to represent a set of Resources of which any one may satisfy a particular industry's input requirement
+// e.g., a textile industry might have a SubstituteResourceSet including wool, cotton, flax, etc.; any one of these would be sufficient
 class SubstituteResourceSet
 {
   autounique id;
@@ -136,50 +141,77 @@ class SubstituteResourceSet
   * -- * Resource substituteInputs;
 }
 
+// Resource is anything — land, labor, capital, or something else — that is used to create more goods or is a final good
 // TODO: more subclasses of Resource, to represent important categories of resources that would have distinct attributes
-// a Resource is anything — land, labor, capital, or something else — that is used to create more goods or is a final good
 class Resource
 {
   unique String name;
   // TODO: more attributes
 }
 
+// BaseResource is a subclass of Resource that represents the base resources an economy possesses without even any industries present
+class BaseResource
+{
+  isA Resource;
+  
+  * baseResources -- * Economy economies;
+}
+
+// Crop is a subclass of Resource that represents agricultural crops, whether for food or for other crop derivatives
+// each instance has a crop type, which represents whether it's used for food, other purposes, or both
 class Crop
 {
-  enum CropType { FoodCrop, CashCrop }
+  enum CropType { FoodCrop, CashCrop, FoodAndCashCrop }
   CropType cropType;
   Integer kcalPerAcre;
   isA Resource;
   // TODO: attributes
 }
 
+// Labor is a subclass of Resource that can represent any particular profession or trade
+// has a labor type, which represents what level of skill or education the profession is
+// TODO: relate to population better than via Person; want to eliminate Person class
 class Labor
 {
   isA Resource;
-  
-  // TODO: more attributes, somehow relate to resources?
+  enum LaborType { ManualLabor, UnskilledLabor, SkilledLabor, EducatedLabor }
+  LaborType laborType;
+  // TODO: more attributes
 }
 
+// Livestock is a subclass of Resource that, like Crop represents crops, represents any type of livestock
+// it has one or more uses that describe what the livestock can be used for
 class Livestock
 {
   isA Resource;
   // TODO: more attributes
+  enum LivestockUse { Meat, Dairy, Eggs, Labor, Fiber, Other }
+  LivestockUse[] livestockUses;
 }
 
+// Material is a subclass of Resource that represents any raw or processed material that goes into the production of other goods
+// TODO: lots
 class Material
 {
   isA Resource;
 }
 
+// TODO: Food class?
+// TODO: FinalGood class?
+
+// TradeRoute represents a, well, trade route
+// it has one or more economies it belongs to
+// it has multiple trade exchanges, each one in a city, and each one with imported and exported resources
 class TradeRoute
 {
   autounique id;
   
-  // TODO: connect TradeRoute with economy somehow; need to model imports and exports with regard to a certain economy?
-  // TODO: need to associate each city on a trade route with the resources that city imports and exports; maybe a TradeExchange class?
   * tradeRoutes -- 1..* Economy economies;
 }
 
+// TradeExchange represents the import and export market in a certain city for a specific trade route
+// there is one trade exchange for each pair of a city and a trade route, i.e., a city will have separate exchanges corresponding to each trade route
+// it has imports that are treated as relative to the city; i.e., if a city is net buying a good, it counts as an import in that exchange
 class TradeExchange
 {
   autounique id;
@@ -190,8 +222,5 @@ class TradeExchange
   * exportMarkets -- * Resource exports;
 }
 
-// TODO: types of resources
-// TODO: military? it could be a subclass of Industry, but have no outputs? would represent the cost of resources but no output. could have extra associations that a regular industry does not have.
-// TODO: professions (some way in which labor is a type of resource?)
 // TODO: non-character people? i.e., they make up society and the economy, but aren't relevant to the plot
 // TODO: enums for climate that can be used by a region and for crops

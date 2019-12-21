@@ -26,9 +26,9 @@ class Faction
   1 faction -- * Region regions;
   0..1 -> 1 City capital;
   1 faction -- * City cities;
-  * tradePartners -- * Faction tradePartners;
-  * allies -- * Faction allies;
-  * rivals -- * Faction rivals;
+  * self tradePartners;
+  * self allies;
+  * self rivals;
 }
 
 // Region represents a geographical region

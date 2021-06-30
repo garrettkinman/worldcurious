@@ -1,0 +1,35 @@
+{
+  "name": "worldcurious",
+  "version": "1.0.0",
+  "description": "A browser-based, serverless hardcore worldbuilding tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "asbuild:untouched": "asc assembly/index.ts --target debug",
+    "asbuild:optimized": "asc assembly/index.ts --target release",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garrettkinman/worldcurious.git"
+  },
+  "keywords": [
+    "worldbuilding",
+    "wasm",
+    "webassembly",
+    "assemblyscript",
+    "serverless"
+  ],
+  "author": "gkinman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/garrettkinman/worldcurious/issues"
+  },
+  "homepage": "https://github.com/garrettkinman/worldcurious#readme",
+  "dependencies": {
+    "@assemblyscript/loader": "^0.19.5"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.19.5"
+  }
+}
